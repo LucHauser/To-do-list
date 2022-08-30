@@ -1,23 +1,46 @@
-import React, { useState } from 'react';
-// import { ITask } from './ITask';
-// {id,completed, title}: ITask
+import React, { useEffect, useState } from 'react';
+import ITask from './Interfaces';
 
-function Edit () {
-    function test(){
-        alert("Post");
+export interface IProps {
+    taskToEdit: ITask;
+    save: (newItem : ITask) => void;
+}
+
+function TaskEdit (props: IProps) {
+    const initTask = { "taskDescription": "", "taskId": 0, "completed": false};
+    // const initTask = { "taskDescription": props.taskToEdit.taskDescription, "taskId": props.taskToEdit.taskId, "completed": props.taskToEdit.completed};
+
+    const [formValue, setFormValue] = useState(props.taskToEdit ?? initTask);
+    useEffect(() => setFormValue(props.taskToEdit), [props]);
+
+    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormValue({ ...formValue, [name]: value });
+    };
+
+    function onFormSubmit(e : React.FormEvent<HTMLFormElement>){
+        e.preventDefault();
+        props.save(formValue);
     }
     return (
-        <div className='EditTask'>
+        <div className='EditTask' id='EditTask'>
             <h2>Edit Task</h2>
-            <label htmlFor='{title}'>Title: </label>
-            <input type="text" id="title"/>
-            <input type="submit" value="Submit"/>
-            <br/>
+            <form className="formAdd" onSubmit={onFormSubmit}>
+                <label htmlFor='{description}'>Task Description: </label>
+                <input type="text" id="description"
+                value={formValue.title}
+                name="title"
+                onChange={onInputChange}/>
+                <br/>
 
-            <label htmlFor='{completed}'>completed: </label>
-            <input type="checkbox" id="completed"/>
+                <label htmlFor='{completed}'>completed: </label>
+                <input type="checkbox" id="completed"
+                value={formValue.title}
+                onChange={onInputChange}/>
+                <button >Save</button>
+            </form>
         </div>
     );
 }
 
-export default Edit;
+export default TaskEdit;
