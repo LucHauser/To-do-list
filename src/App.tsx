@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import TaskList from './TaskList';
@@ -62,6 +62,11 @@ function App() {
   function deleteTask(task: ITask){
     let tasksWithoutDelte = tasks.filter(currentTask => task.id  !== currentTask.id);
     setTasks(tasksWithoutDelte);
+    useEffect(() => {
+      // DELETE request using axios inside useEffect React hook
+      axios.delete(baseURL + "/" + task.id)
+          .then(() => console.log("Delete Successfull"));
+      }, []);
   }
 
   return (
