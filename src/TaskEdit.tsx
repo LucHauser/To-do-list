@@ -14,13 +14,25 @@ function TaskEdit (props: IProps) {
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormValue({ ...formValue, [name]: value });
+
+        if (name === "completed"){
+            setFormValue({...formValue,["completed"]: !formValue.completed});
+        }
+        else{
+            setFormValue({ ...formValue, [name]: value });
+        }
     };
 
     function onFormSubmit(e : React.FormEvent<HTMLFormElement>){
         e.preventDefault();
-        console.log(formValue);
-        props.save(formValue);
+        if (typeof formValue.title === 'string' && formValue.title.length === 0)
+        {
+            alert("Pleas write a description");
+        }
+        else {
+            console.log(formValue);
+            props.save(formValue);
+        }
     }
     return (
         <div className='EditTask' id='EditTask'>
@@ -35,7 +47,8 @@ function TaskEdit (props: IProps) {
                 <label htmlFor='{completed}'>completed: </label>
                 <input type="checkbox" id="completed"
                 defaultChecked={formValue.completed}
-                onChange={onInputChange}/>
+                onChange={onInputChange}
+                name="completed"/>
                 <button >Save</button>
             </form>
         </div>
