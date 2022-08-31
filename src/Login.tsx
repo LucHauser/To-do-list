@@ -20,18 +20,14 @@ function Login (props: IProps) {
     function onFormSubmit(e : React.FormEvent<HTMLFormElement>){
         e.preventDefault();
         axios.post(baseURL, { "email": formValue.email, "password": formValue.password }).then((response) => {
-            if (response.status === 200){
-                let token = response.data.token;
-                props.setToken(token);
-            }
-            else
-            {
-                alert("Loging not corect");
-            }
+            let token = response.data.token;
+            props.setToken(token);
+        }).catch((error) => {
+            alert("Login failed");
         });
     }
     return (
-        <div className='EditTask' id='EditTask'>
+        <div className='loginForm'>
             <h2>Login</h2>
             <form className="formLogin" onSubmit={onFormSubmit}>
                 <label>Email: </label>
@@ -52,7 +48,7 @@ function Login (props: IProps) {
                     value={formValue.password}
                     onChange={onInputChange}
                 />
-                <button>Login</button>
+                <button className='btn btn-dark'>Login</button>
         </form>
         </div>
     );
