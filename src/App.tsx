@@ -45,6 +45,7 @@ function App() {
       task.id = heigestId+1;
       axios.post(baseURL + 'auth/jwt/tasks', task, { headers: {"Authorization" : `Bearer ${tokenForApp}`}});
       setTasks([...tasks, task]);
+      alert("Task added");
       }
       else {
         alert("You have to login");
@@ -65,6 +66,7 @@ function App() {
       setTasks(tasks.map(i => (i.id === id ? task : i)));
       setTaskToEdit(emptyTask);
       axios.put(baseURL + "auth/jwt/tasks", task, { headers: {"Authorization" : `Bearer ${tokenForApp}`}});
+      alert("Task is saved");
   }
 
   function deleteTask(task: ITask) {
