@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import TaskList from './TaskList';
 import ITask from './Interfaces';
 import AddTaskForm from './AddTaskForm';
 import TaskEdit from './TaskEdit';
-import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
+import Login from './Login';
 
 const emptyTask: ITask = { "title": "", "id": 0, "completed": false};
 
@@ -17,10 +16,13 @@ const defaultTasks: Array<ITask> = [
 
 ];
 
+const emptyToken = {"token": ""};
+
 function App() {
   const baseURL = "http://localhost:3000/";
   const [tasks, setTasks] = useState(defaultTasks);
   const [taskToEdit, setTaskToEdit] = useState(emptyTask);
+  const [tokenForApp, setTokenForApp] = useState("");
 
   React.useEffect(() => {
     axios.get(baseURL + "tasks").then((response) => {
@@ -31,52 +33,76 @@ function App() {
 
 
   function addTask(task : ITask){
-    let heigestId = 0;
-    for (let i = 0; i < tasks.length;i++) {
-      let currentId = tasks[i].id ?? 0;
-      if (currentId > heigestId){
-        heigestId = currentId;
+    if (tokenForApp !== "")
+    {
+      let heigestId = 0;
+      for (let i = 0; i < tasks.length;i++) {
+        let currentId = tasks[i].id ?? 0;
+        if (currentId > heigestId){
+          heigestId = currentId;
+        }
       }
-    }
-    task.id = heigestId+1;
-    setTasks([...tasks, task]);
-    axios.post(baseURL + 'tasks/', task);
+      task.id = heigestId+1;
+      axios.post(baseURL + 'auth/jwt/tasks', task, { headers: {"Authorization" : `Bearer ${tokenForApp}`}});
+      setTasks([...tasks, task]);
+      }
+      else {
+        alert("You have to login");
+      }
   }
 
   function editTask(task: ITask){
-    ReactDOM.render(<TaskEdit taskToEdit={task} save={saveEdit}></TaskEdit>, document.getElementById("TaskEdit"));
+    if (tokenForApp !== "") {
+      setTaskToEdit(task);
+    }
+    else {
+      alert("You have to login");
+    }
   }
 
   function saveEdit(task: ITask){
-    const id = task.id;
-    if (id != null){
-      tasks[id].completed = task.completed;
-      tasks[id].title = task.title;
+      const id = task.id;
+      setTasks(tasks.map(i => (i.id === id ? task : i)));
+      setTaskToEdit(emptyTask);
+      axios.put(baseURL + "auth/jwt/tasks", task, { headers: {"Authorization" : `Bearer ${tokenForApp}`}});
+  }
+
+  function deleteTask(task: ITask) {
+    if (tokenForApp !== "") {
+      let tasksWithoutDelte = tasks.filter(currentTask => task.id  !== currentTask.id);
+      setTasks(tasksWithoutDelte);
+      axios.delete(baseURL + "auth/jwt/task/" + task.id, { headers: {"Authorization" : `Bearer ${tokenForApp}`}});
+      alert("Task is deleted");
     }
     else {
-      console.log("Id ist nicht vorhanden");
+      alert("You have to login");
     }
-    let taskEdit = document.getElementById("EditTask")?.remove();
   }
 
-  function deleteTask(task: ITask){
-    let tasksWithoutDelte = tasks.filter(currentTask => task.id  !== currentTask.id);
-    setTasks(tasksWithoutDelte);
-    useEffect(() => {
-      // DELETE request using axios inside useEffect React hook
-      axios.delete(baseURL + "/" + task.id)
-          .then(() => console.log("Delete Successfull"));
-      }, []);
+  function setToken(token: string){
+    setTokenForApp(token);
+    console.log(tokenForApp);
   }
 
-  return (
-    <div className="App">
-      <TaskList tasks={tasks} edit={editTask} remove={deleteTask}></TaskList>
-      <AddTaskForm add={addTask}></AddTaskForm>
-      <div id="TaskEdit">
+  let addOrEdit;
+  if (taskToEdit === emptyTask){
+    addOrEdit = <AddTaskForm add={addTask}></AddTaskForm>;
+  }
+  else {
+    addOrEdit = <TaskEdit taskToEdit={taskToEdit} save={saveEdit}></TaskEdit>;
+  }
+  if (tokenForApp !== "") {
+    return (
+      <div className="App">
+        <TaskList tasks={tasks} edit={editTask} remove={deleteTask}></TaskList>
+        {addOrEdit}
       </div>
-    </div>
-  );
+    );
+  }
+  else
+  {
+    return <Login setToken={setToken}></Login>;
+  }
 }
 
 export default App;

@@ -8,7 +8,6 @@ export interface IProps {
 
 function TaskEdit (props: IProps) {
     const initTask = { "taskDescription": "", "taskId": 0, "completed": false};
-    // const initTask = { "taskDescription": props.taskToEdit.taskDescription, "taskId": props.taskToEdit.taskId, "completed": props.taskToEdit.completed};
 
     const [formValue, setFormValue] = useState(props.taskToEdit ?? initTask);
     useEffect(() => setFormValue(props.taskToEdit), [props]);
@@ -20,6 +19,7 @@ function TaskEdit (props: IProps) {
 
     function onFormSubmit(e : React.FormEvent<HTMLFormElement>){
         e.preventDefault();
+        console.log(formValue);
         props.save(formValue);
     }
     return (
@@ -32,10 +32,9 @@ function TaskEdit (props: IProps) {
                 name="title"
                 onChange={onInputChange}/>
                 <br/>
-
                 <label htmlFor='{completed}'>completed: </label>
                 <input type="checkbox" id="completed"
-                value={formValue.title}
+                defaultChecked={formValue.completed}
                 onChange={onInputChange}/>
                 <button >Save</button>
             </form>
