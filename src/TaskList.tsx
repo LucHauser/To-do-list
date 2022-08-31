@@ -16,25 +16,25 @@ function TaskList(props: IProps) {
 
     return (
         <div className="list">
-            <table>
+            <table className='table table-light'>
                 <thead>
                     <tr>
                         <td>ID</td>
-                        <td>Titel</td>
+                        <td>Description</td>
                         <td>Completed</td>
-                        <td><td>Actions</td></td>
-                        <td><td>Actions</td></td>
+                        <td>Delete</td>
+                        <td>Edit</td>
                     </tr>
                 </thead>
                 <tbody>
                     {props.tasks.map(task => {
                         return (
-                            <tr key={task.taskId}>
-                                <td>{task.taskId}</td>
-                                <td>{task.taskDescription}</td>
-                                <td>{task.completed}</td>
-                                <td><button onClick={() => remove(task)}>Löschen</button></td>
-                                <td><button onClick={() => editTask(task)}>Edit</button></td>
+                            <tr key={task.id}>
+                                <td>{task.id}</td>
+                                <td>{task.title}</td>
+                                <td>{task.completed ? "Yes": "No"}</td>
+                                <td><button type='button' className='btn btn-danger' onClick={() => remove(task)}>Löschen</button></td>
+                                <td><button type='button' className='btn btn-success' onClick={() => editTask(task)}>Edit</button></td>
                             </tr>
                         );
                     })}

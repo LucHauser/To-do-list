@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export interface IProps {
     setToken: (tocken: "") => void;
@@ -36,9 +36,10 @@ function Login (props: IProps) {
             <form className="formLogin" onSubmit={onFormSubmit}>
                 <label>Email: </label>
                 <input
-                    type="text"
+                    type="email"
                     placeholder="please input your email"
                     name="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
                     value={formValue.email}
                     onChange={onInputChange}
                 />

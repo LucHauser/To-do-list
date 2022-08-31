@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import './App.css';
 import TaskList from './TaskList';
 import ITask from './Interfaces';
@@ -16,19 +16,19 @@ const defaultTasks: Array<ITask> = [
 
 ];
 
-const emptyToken = {"token": ""};
+const emptyToken = "";
 
 function App() {
   const baseURL = "http://localhost:3000/";
   const [tasks, setTasks] = useState(defaultTasks);
   const [taskToEdit, setTaskToEdit] = useState(emptyTask);
-  const [tokenForApp, setTokenForApp] = useState("");
+  const [tokenForApp, setTokenForApp] = useState(emptyToken);
 
   React.useEffect(() => {
-    axios.get(baseURL + "tasks").then((response) => {
+    axios.get(baseURL + "auth/jwt/tasks", { headers: {"Authorization" : `Bearer ${tokenForApp}`}}).then((response) => {
       setTasks(response.data);
     });
-  }, []);
+  }, [tokenForApp]);
   if (!tasks) return null;
 
 
