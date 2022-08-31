@@ -27,9 +27,9 @@ function Login (props: IProps) {
         });
     }
     return (
-        <div className='loginForm'>
-            <h2>Login</h2>
-            <form className="formLogin" onSubmit={onFormSubmit}>
+        <div className='card'>
+            <h2 className='card-header'>Login</h2>
+            <form className="card-body" onSubmit={onFormSubmit}>
                 <label>Email: </label>
                 <input
                     type="email"
@@ -43,12 +43,13 @@ function Login (props: IProps) {
                 <label>Password: </label>
                 <input
                     type="password"
-                    placeholder="please input your password"
+                    placeholder="please input password"
                     name="password"
                     value={formValue.password}
                     onChange={onInputChange}
                 />
-                <button className='btn btn-dark'>Login</button>
+                <br/>
+                <button className='btn btn-outline-success'>Login</button>
         </form>
         </div>
     );
